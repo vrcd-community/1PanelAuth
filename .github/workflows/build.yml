@@ -15,8 +15,6 @@ jobs:
           - os: ubuntu-22.04
             runtime: linux-x64
           - os: ubuntu-22.04
-            runtime: linux-arm
-          - os: ubuntu-22.04
             runtime: linux-arm64
           - os: windows-latest
             runtime: win-x86
@@ -36,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install ARM64 toolchain for Linux
-        if: matrix.os == 'ubuntu-22.04' && (matrix.runtime == 'linux-arm64' || matrix.runtime == 'linux-arm')
+        if: matrix.os == 'ubuntu-22.04' && matrix.runtime == 'linux-arm64'
         run: |
           sudo dpkg --add-architecture arm64
           sudo bash -c 'cat > /etc/apt/sources.list.d/arm64.list <<EOF
