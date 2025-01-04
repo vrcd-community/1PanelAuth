@@ -58,7 +58,7 @@ jobs:
         run: dotnet restore -r ${{ matrix.runtime }}
 
       - name: Publish
-        run: dotnet publish --project ./1PanelAuth.csproj --no-restore -r ${{ matrix.runtime }} -c Release -o ./app
+        run: dotnet publish ./1PanelAuth.csproj --no-restore -r ${{ matrix.runtime }} -c Release -o ./app
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
