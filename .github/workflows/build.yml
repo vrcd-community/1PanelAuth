@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install ARM64 toolchain for Linux
-        if: matrix.os == 'ubuntu-22.04' && matrix.runtime == 'linux-arm64'
+        if: matrix.os == 'ubuntu-22.04' && (matrix.runtime == 'linux-arm64' || matrix.runtime == 'linux-arm')
         run: |
           sudo dpkg --add-architecture arm64
           sudo bash -c 'cat > /etc/apt/sources.list.d/arm64.list <<EOF
@@ -48,6 +48,25 @@ jobs:
           sudo sed -i -e 's/deb mirror/deb [arch=amd64] mirror/g' /etc/apt/sources.list
           sudo apt update
           sudo apt install -y clang llvm binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu zlib1g-dev:arm64
+
+      - name: Install ARM toolchain for Linux
+        if: matrix.os == 'ubuntu-22.04' && matrix.runtime == 'linux-arm64'
+        run: |
+          sudo dpkg --add-architecture arm
+          sudo bash -c 'cat > /etc/apt/sources.list.d/arm.list <<EOF
+          deb [arch=arm] http://ports.ubuntu.com/ubuntu-ports/ jammy main restricted
+          deb [arch=arm] http://ports.ubuntu.com/ubuntu-ports/ jammy-updates main restricted
+          deb [arch=arm] http://ports.ubuntu.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
+          EOF'
+          sudo sed -i -e 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
+          sudo sed -i -e 's/deb mirror/deb [arch=amd64] mirror/g' /etc/apt/sources.list
+          sudo apt update
+          sudo apt install -y clang llvm binutils-aarch-linux-gnu gcc-aarch-linux-gnu zlib1g-dev:arm
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
