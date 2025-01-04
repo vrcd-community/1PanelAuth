@@ -13,9 +13,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-22.04
-            runtime: linux-x86
-          - os: ubuntu-22.04
             runtime: linux-x64
+          - os: ubuntu-22.04
+            runtime: linux-arm
           - os: ubuntu-22.04
             runtime: linux-arm64
           - os: windows-latest
