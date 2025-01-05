@@ -131,18 +131,14 @@ app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint, context =>
             const globalStateRaw = localStorage.getItem('GlobalState')
 
             if (globalStateRaw) {
-                let globalState = JSON.parse(globalStateRaw)
-                
-                if (!globalState.isLogin) {
-                    globalState.isLogin = true
-                    localStorage.setItem('GlobalState', JSON.stringify(globalState))
-                }
+                updateGlobalState()
             } else {
                 const observer = new MutationObserver(e => {
                     if (e[0].removedNodes) {
                         observer.disconnect()
                         setTimeout(() => {
                             if (localStorage.getItem('GlobalState')) {
+                                updateGlobalState()
                                 location.reload()
                             }
                         }, 1000)
@@ -152,6 +148,18 @@ app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint, context =>
                 observer.observe(document.querySelector("#app"), {
                     childList: true
                 })
+            }
+            
+            function updateGlobalState() {
+                const globalStateRaw = localStorage.getItem('GlobalState')
+                let globalState = JSON.parse(globalStateRaw)
+            
+                if (!globalState.isLogin) {
+                    globalState.isLogin = true
+                    localStorage.setItem('GlobalState', JSON.stringify(globalState))
+                    
+                    location.reload()
+                }
             }
             """;
 
