@@ -46,6 +46,14 @@ app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint.ToString(), context 
 
     context.AddRequestTransform(requestTransformContext =>
     {
+        requestTransformContext.ProxyRequest.Version = new Version(1, 1);
+        requestTransformContext.ProxyRequest.VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
+
+        return ValueTask.CompletedTask;
+    });
+
+    context.AddRequestTransform(requestTransformContext =>
+    {
         var apiToken = forwarderOptions.Token;
         var unixTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
 
