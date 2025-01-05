@@ -162,10 +162,11 @@ app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint, context =>
         if (!clientPreferEncodings.Any(IsSupportedEncoding))
         {
             response.Headers.Remove("Content-Encoding");
-            response.ContentLength = null;
 
+            response.ContentLength = null;
             await using var streamWriter = new StreamWriter(response.Body);
             await streamWriter.WriteAsync(responseHtml);
+            await streamWriter.FlushAsync();
 
             return;
         }
@@ -174,11 +175,14 @@ app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint, context =>
         await using var responseContentStreamWriter = new StreamWriter(responseContentStream);
 
         await responseContentStreamWriter.WriteAsync(responseHtml);
+        await responseContentStreamWriter.FlushAsync();
+
         responseContentStream.Seek(0, SeekOrigin.Begin);
 
         response.Headers.ContentEncoding = responseEncoding;
-        await using var compressResponseStream = GetCompressStream(response.Body, responseEncoding);
+        response.ContentLength = null;
 
+        await using var compressResponseStream = GetCompressStream(response.Body, responseEncoding);
         await responseContentStream.CopyToAsync(compressResponseStream);
     });
 });
