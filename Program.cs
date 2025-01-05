@@ -32,7 +32,7 @@ var app = builder.Build();
 
 var forwarderOptions = app.Services.GetRequiredService<IOptions<ForwarderOptions>>().Value;
 
-app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint.ToString(), context =>
+app.MapForwarder("{**catch-all}", forwarderOptions.Endpoint, context =>
 {
     context.AddRequestTransform(requestTransformContext =>
     {
